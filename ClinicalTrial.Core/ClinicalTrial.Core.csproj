@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ClinicalTrial.DAL\ClinicalTrial.DAL.csproj" />
     <ProjectReference Include="..\ClinicalTrial.Proxy\ClinicalTrial.Proxy.csproj" />
   </ItemGroup>
 

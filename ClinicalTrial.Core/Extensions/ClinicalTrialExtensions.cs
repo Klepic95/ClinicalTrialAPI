@@ -1,4 +1,6 @@
-﻿using ClinicalTrial.DAL.Context;
+﻿using ClinicalTrial.DAL;
+using ClinicalTrial.DAL.Context;
+using ClinicalTrial.DAL.Interfaces;
 using ClinicalTrial.Proxy.Interfaces;
 using ClinicalTrial.Proxy.Services;
 using Microsoft.EntityFrameworkCore;
@@ -15,18 +17,20 @@ namespace Clinical.Core.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            // Register your services
             services.AddScoped<IClinicalTrialService, ClinicalTrialService>();
+            return services;
+        }
 
+        public static IServiceCollection AddApplicationRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IClinicalTrialRepository, ClinicalTrialRepository>();
             return services;
         }
 
         public static IServiceCollection AddClinicalTrialDbContext(this IServiceCollection services, string connectionString)
         {
-            // Register DbContext
             services.AddDbContext<ClinicalTrialDbContext>(options =>
                 options.UseSqlServer(connectionString));
-
             return services;
         }
     }

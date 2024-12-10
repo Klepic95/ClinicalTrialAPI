@@ -14,7 +14,7 @@ namespace ClinicalTrial.API.Controllers
             _clinicalTrialService = clinicalTrialService;
         }
 
-        [HttpPost("upload")]
+        [HttpPost("uploadFile")]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             if (file == null || file.Length == 0 || Path.GetExtension(file.FileName) != ".json")
@@ -22,7 +22,8 @@ namespace ClinicalTrial.API.Controllers
                 return BadRequest("Invalid file type.");
             }
 
-            if (file.Length > 10 * 1024 * 1024) // Limit to 10MB
+            // Limit to 10MB
+            if (file.Length > 10 * 1024 * 1024)
             {
                 return BadRequest("File size exceeds limit.");
             }

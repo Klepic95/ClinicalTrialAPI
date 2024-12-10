@@ -1,62 +1,127 @@
-﻿using ClinicalTrial.DAL.Context;
+﻿using ClinicalTrial.DAL;
+using ClinicalTrial.DAL.Interfaces;
+using ClinicalTrial.DAL.Models;
 using ClinicalTrial.Proxy.Interfaces;
 using ClinicalTrial.Proxy.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 
-namespace ClinicalTrial.Proxy.Services;
-public class ClinicalTrialService : IClinicalTrialService
+namespace ClinicalTrial.Proxy.Services
 {
-    private readonly ClinicalTrialDbContext _dbContext;
-    private readonly ILogger<ClinicalTrialService> _logger;
-
-    public ClinicalTrialService(ClinicalTrialDbContext dbContext, ILogger<ClinicalTrialService> logger)
+    public class ClinicalTrialService : IClinicalTrialService
     {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
+        private readonly IClinicalTrialRepository _repository;
+        private readonly ILogger<ClinicalTrialService> _logger;
+        private readonly string _schemaFilePath = Path.Combine(Directory.GetCurrentDirectory(), "TemplateFileValidation.json");
 
-    public async Task<ProcessClinicalFile> ProcessFileAsync(IFormFile file)
-    {
-        try
+
+        public ClinicalTrialService(IClinicalTrialRepository repository, ILogger<ClinicalTrialService> logger)
         {
-            using var reader = new StreamReader(file.OpenReadStream());
-            var jsonContent = await reader.ReadToEndAsync();
+            _repository = repository;
+            _logger = logger;
+        }
 
-            // Validate the JSON with schema here
-            // Assume 'ValidateJson' is a helper method to validate the JSON schema
-            if (!ValidateJson(jsonContent))
+        public async Task<ProcessClinicalFile> ProcessFileAsync(IFormFile file)
+        {
+            try
             {
-                return ProcessClinicalFile.Failure("Invalid JSON schema.");
-            }
+                using var reader = new StreamReader(file.OpenReadStream());
+                var jsonContent = await reader.ReadToEndAsync();
 
-            // Map JSON to ClinicalTrial
-            var trials = JsonConvert.DeserializeObject<List<DAL.Models.ClinicalTrial>>(jsonContent);
-            foreach (var trial in trials)
-            {
-                trial.DurationInDays = (trial.EndDate - trial.StartDate).Days;
-                if (trial.Status == "Ongoing" && trial.EndDate == default)
+                // JSON will first be validated against a schema before proceeding
+                if (!ValidateJson(jsonContent))
                 {
-                    trial.EndDate = trial.StartDate.AddMonths(1);
+                    return ProcessClinicalFile.Failure("Invalid JSON schema.");
                 }
 
-                _dbContext.ClinicalTrials.Add(trial);
+                var clinicalTrial = JsonConvert.DeserializeObject<Models.ClinicalTrial>(jsonContent);
+                var clinicalTialDTO = TransformToDTOModel(clinicalTrial);
+
+                if (clinicalTialDTO.Status == "Ongoing" && clinicalTialDTO.EndDate == default)
+                {
+                    clinicalTialDTO.EndDate = clinicalTialDTO.StartDate.AddMonths(1);
+                }
+                clinicalTialDTO.DurationInDays = (clinicalTialDTO.EndDate - clinicalTialDTO.StartDate).Days;
+
+                await _repository.AddClinicalTrialAsync(clinicalTialDTO);
+                return ProcessClinicalFile.Success("File processed successfully.");
             }
-
-            await _dbContext.SaveChangesAsync();
-            return ProcessClinicalFile.Success("File processed successfully.");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing file.");
+                return ProcessClinicalFile.Failure("Error processing file.");
+            }
         }
-        catch (Exception ex)
+
+        private bool ValidateJson(string jsonContent)
         {
-            _logger.LogError(ex, "Error processing file.");
-            return ProcessClinicalFile.Failure("Error processing file.");
-        }
-    }
+            try
+            {
+                var schemaJson = GetSchemaJson();
+                var schema = JSchema.Parse(schemaJson);
 
-    private bool ValidateJson(string jsonContent)
-    {
-        // This will be implemented later with the provided schema
-        return true;
+                var json = JObject.Parse(jsonContent);
+
+                var isValid = json.IsValid(schema, out IList<string> errorMessages);
+
+                if (!isValid)
+                {
+                    foreach (var errorMessage in errorMessages)
+                    {
+                        _logger.LogError("JSON Schema Validation Error: " + errorMessage);
+                    }
+                }
+
+                return isValid;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error validating JSON schema.");
+                return false;
+            }
+        }
+
+        private string GetSchemaJson()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            using (var stream = assembly.GetManifestResourceStream(_schemaFilePath))
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        private ClinicalTrialDTO TransformToDTOModel(Models.ClinicalTrial trial)
+        {
+            return new ClinicalTrialDTO
+            {
+                TrialId = trial.TrialId,
+                Title = trial.Title,
+                StartDate = trial.StartDate,
+                EndDate = trial.EndDate,
+                Participants = trial.Participants,
+                Status = trial.Status.ToString()
+            };
+        }
+
+        private Models.ClinicalTrial TransformToProxyModel(ClinicalTrialDTO trialDTO)
+        {
+            return new Models.ClinicalTrial
+            {
+                TrialId = trialDTO.TrialId,
+                Title = trialDTO.Title,
+                StartDate = trialDTO.StartDate,
+                EndDate = trialDTO.EndDate,
+                Participants = trialDTO.Participants,
+                Status = Enum.TryParse<TrialStatus>(trialDTO.Status, out var status) ? status : TrialStatus.Ongoing,
+            };
+        }
     }
 }

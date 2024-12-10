@@ -7,5 +7,5 @@ public class ClinicalTrialDbContext : DbContext
 {
     public ClinicalTrialDbContext(DbContextOptions<ClinicalTrialDbContext> options) : base(options) { }
 
-    public DbSet<Models.ClinicalTrial> ClinicalTrials { get; set; }
+    public DbSet<Models.ClinicalTrialDTO> ClinicalTrials { get; set; }
 }

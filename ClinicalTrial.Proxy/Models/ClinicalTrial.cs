@@ -1,4 +1,7 @@
-﻿namespace ClinicalTrial.DAL.Models
+﻿using ClinicalTrial.Proxy.Models;
+using System.Text.Json.Serialization;
+
+namespace ClinicalTrial.Proxy.Models
 {
     public class ClinicalTrial
     {
@@ -7,8 +10,7 @@
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int Participants { get; set; }
-        public string Status { get; set; }
-        // Per the requirements, the duration of the trial is calculated
-        public int DurationInDays { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public TrialStatus Status { get; set; }
     }
 }
