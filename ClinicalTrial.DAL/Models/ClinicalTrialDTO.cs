@@ -4,6 +4,7 @@ namespace ClinicalTrial.DAL.Models
 {
     public class ClinicalTrialDTO
     {
+        public Guid Id { get; set; }
         public string TrialId { get; set; }
         public string Title { get; set; }
         public DateTime StartDate { get; set; }

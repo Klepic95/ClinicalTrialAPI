@@ -25,10 +25,10 @@ namespace ClinicalTrial.DAL
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<ClinicalTrialDTO> GetByTrialIdAsync(string trialId)
+        public async Task<ClinicalTrialDTO> GetByTrialIdAsync(Guid id)
         {
             var trial = await _dbContext.ClinicalTrials
-                .Where(t => t.TrialId == trialId)
+                .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
 
             if (trial == null)
