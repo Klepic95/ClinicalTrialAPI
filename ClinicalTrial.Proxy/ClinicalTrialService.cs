@@ -59,6 +59,20 @@ namespace ClinicalTrial.Proxy.Services
             }
         }
 
+        public async Task<ClinicalRecord> GetClinicalTrialByIdAsync(Guid id)
+        {
+            try
+            {
+                var clinicalTrialDTO = await _repository.GetClinicialTrialByIdAsync(id);
+                return TransformToRepresentationModel(clinicalTrialDTO);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Clinical record not found!");
+                throw new KeyNotFoundException("Clinical record not found!");
+            }
+        }
+
         private bool ValidateJson(string jsonContent)
         {
             try
@@ -111,9 +125,9 @@ namespace ClinicalTrial.Proxy.Services
             };
         }
 
-        private Models.ClinicalTrial TransformToProxyModel(ClinicalTrialDTO trialDTO)
+        private ClinicalRecord TransformToRepresentationModel(ClinicalTrialDTO trialDTO)
         {
-            return new Models.ClinicalTrial
+            return new Models.ClinicalRecord
             {
                 TrialId = trialDTO.TrialId,
                 Title = trialDTO.Title,
@@ -121,6 +135,7 @@ namespace ClinicalTrial.Proxy.Services
                 EndDate = trialDTO.EndDate,
                 Participants = trialDTO.Participants,
                 Status = Enum.TryParse<TrialStatus>(trialDTO.Status, out var status) ? status : TrialStatus.Ongoing,
+                DurationInDays = trialDTO.DurationInDays
             };
         }
     }

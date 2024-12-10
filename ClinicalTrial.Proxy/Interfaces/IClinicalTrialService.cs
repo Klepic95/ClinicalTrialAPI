@@ -6,5 +6,6 @@ namespace ClinicalTrial.Proxy.Interfaces
     public interface IClinicalTrialService
     {
         Task<ProcessClinicalFile> ProcessFileAsync(IFormFile file);
+        Task<ClinicalRecord> GetClinicalTrialByIdAsync(Guid id);
     }
 }

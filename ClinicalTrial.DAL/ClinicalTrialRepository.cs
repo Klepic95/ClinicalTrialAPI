@@ -25,18 +25,11 @@ namespace ClinicalTrial.DAL
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<ClinicalTrialDTO> GetByTrialIdAsync(Guid id)
+        public async Task<ClinicalTrialDTO> GetClinicialTrialByIdAsync(Guid id)
         {
-            var trial = await _dbContext.ClinicalTrials
+            return await _dbContext.ClinicalTrials
                 .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
-
-            if (trial == null)
-            {
-                throw new KeyNotFoundException("Clinical trial not found");
-            }
-
-            return trial;
         }
     }
 }

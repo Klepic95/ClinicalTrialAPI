@@ -1,4 +1,5 @@
 ﻿using ClinicalTrial.Proxy.Interfaces;
+using ClinicalTrial.Proxy.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicalTrial.API.Controllers
@@ -8,10 +9,12 @@ namespace ClinicalTrial.API.Controllers
     public class ClinicalFileController : ControllerBase
     {
         private readonly IClinicalTrialService _clinicalTrialService;
+        private readonly ILogger<ClinicalFileController> _logger;
 
-        public ClinicalFileController(IClinicalTrialService clinicalTrialService)
+        public ClinicalFileController(IClinicalTrialService clinicalTrialService, ILogger<ClinicalFileController> logger)
         {
             _clinicalTrialService = clinicalTrialService;
+            _logger = logger;
         }
 
         [HttpPost("uploadFile")]
@@ -19,18 +22,14 @@ namespace ClinicalTrial.API.Controllers
         {
             if (file == null || file.Length == 0 || Path.GetExtension(file.FileName) != ".json")
             {
+                _logger.LogError("Invalid file type.");
                 return BadRequest("Invalid file type.");
-            }
-
-            // Limit to 10MB
-            if (file.Length > 10 * 1024 * 1024)
-            {
-                return BadRequest("File size exceeds limit.");
             }
 
             var result = await _clinicalTrialService.ProcessFileAsync(file);
             if (!result.IsSuccess)
             {
+                _logger.LogError(result.Message, "Result did not indicate success. Please investigate provided error message.");
                 return BadRequest(result.Message);
             }
 
