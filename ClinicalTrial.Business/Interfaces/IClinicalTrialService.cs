@@ -1,7 +1,7 @@
-﻿using ClinicalTrial.Proxy.Models;
+﻿using ClinicalTrial.Business.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace ClinicalTrial.Proxy.Interfaces
+namespace ClinicalTrial.Business.Interfaces
 {
     public interface IClinicalTrialService
     {

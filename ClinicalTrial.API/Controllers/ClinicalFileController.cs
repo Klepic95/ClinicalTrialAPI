@@ -1,6 +1,6 @@
-﻿using ClinicalTrial.Proxy.Interfaces;
-using ClinicalTrial.Proxy.Models;
-using ClinicalTrial.Proxy.Services;
+﻿using ClinicalTrial.Business.Interfaces;
+using ClinicalTrial.Business.Models;
+using ClinicalTrial.Business.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicalTrial.API.Controllers

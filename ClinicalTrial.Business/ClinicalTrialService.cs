@@ -1,8 +1,8 @@
 ﻿using ClinicalTrial.DAL;
 using ClinicalTrial.DAL.Interfaces;
 using ClinicalTrial.DAL.Models;
-using ClinicalTrial.Proxy.Interfaces;
-using ClinicalTrial.Proxy.Models;
+using ClinicalTrial.Business.Interfaces;
+using ClinicalTrial.Business.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -12,13 +12,13 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace ClinicalTrial.Proxy.Services
+namespace ClinicalTrial.Business.Services
 {
     public class ClinicalTrialService : IClinicalTrialService
     {
         private readonly IClinicalTrialRepository _repository;
         private readonly ILogger<ClinicalTrialService> _logger;
-        private readonly string _schemaFilePath = Path.Combine(Directory.GetCurrentDirectory(), "TemplateFileValidation.json");
+        private readonly string _schemaFilePath = Assembly.GetExecutingAssembly().GetManifestResourceNames()[0];
 
 
         public ClinicalTrialService(IClinicalTrialRepository repository, ILogger<ClinicalTrialService> logger)

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using ClinicalTrial.Business.Models;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace ClinicalTrial.Proxy.Models
+namespace ClinicalTrial.Business.Models
 {
-    public class ClinicalRecord
+    public class ClinicalTrial
     {
         public string TrialId { get; set; }
         public string Title { get; set; }
@@ -16,6 +12,5 @@ namespace ClinicalTrial.Proxy.Models
         public int Participants { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public TrialStatus Status { get; set; }
-        public int DurationInDays { get; set; }
     }
 }

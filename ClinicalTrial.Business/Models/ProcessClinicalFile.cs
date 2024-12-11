@@ -1,4 +1,4 @@
-﻿namespace ClinicalTrial.Proxy.Models
+﻿namespace ClinicalTrial.Business.Models
 {
     public class ProcessClinicalFile
     {
