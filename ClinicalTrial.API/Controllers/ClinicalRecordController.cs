@@ -45,7 +45,7 @@ namespace ClinicalTrial.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "One of the filters is not aligned with the contract. Please check exception.");
+                _logger.LogWarning(ex, "An error occured. Please check exception for more details.");
                 throw;
             }
         }
