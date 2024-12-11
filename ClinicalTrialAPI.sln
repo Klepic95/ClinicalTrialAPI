@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalTrial.Core", "Clini
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalTrial.DAL", "ClinicalTrial.DAL\ClinicalTrial.DAL.csproj", "{06894356-68FC-41DE-B9B7-5E978136081B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalTrial.Proxy", "ClinicalTrial.Proxy\ClinicalTrial.Proxy.csproj", "{B83FE6DE-BF90-402F-92B9-51F788C87FEE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalTrial.Business", "ClinicalTrial.Business\ClinicalTrial.Business.csproj", "{B83FE6DE-BF90-402F-92B9-51F788C87FEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
