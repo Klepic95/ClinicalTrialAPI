@@ -9,8 +9,8 @@ docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=ctaPass1!" -p 1433:1433 --name cta
 
 Note: in above script, replace {your-name} with the actual name of your local machine
 
-After ensuring that connection with the SQL server exists via Docker Container, in the Visual Studio>Package Manager Console, execute following script: "Update-Database" NOTE: Setup startup and Default project in VisualStudio>Package Manager Console to: "ClinicalTrial.DAL"
+After ensuring that connection with the SQL server exists via Docker Container, in the Visual Studio>Package Manager Console, execute following script: "dotnet ef database update" NOTE: Setup startup and Default project in VisualStudio>Package Manager Console to: "ClinicalTrial.DAL". You will need to be in the root of this project!
 
-Change startup project in Visuatl studio to "ClinicalTrial.Api" and run the solution!
+Change startup project in Visuatl studio to "ClinicalTrial.API" and run the solution!
 
 It is necessary to follow these steps in order to sucessfully run application locally!
