@@ -1,4 +1,5 @@
 ﻿using ClinicalTrial.Proxy.Interfaces;
+using ClinicalTrial.Proxy.Models;
 using ClinicalTrial.Proxy.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace ClinicalTrial.API.Controllers
         }
 
         [HttpPost("uploadFile")]
-        public async Task<IActionResult> UploadFile(IFormFile file)
+        public async Task<ActionResult<ProcessClinicalFile>> UploadFile(IFormFile file)
         {
             if (file == null || file.Length == 0 || Path.GetExtension(file.FileName) != ".json")
             {

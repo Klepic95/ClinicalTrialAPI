@@ -31,5 +31,29 @@ namespace ClinicalTrial.DAL
                 .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<ClinicalTrialDTO>> GetFilteredTrialsAsync(string? status = null, int? minParticipants = null, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            var query = _dbContext.ClinicalTrials.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(t => t.Status == status);
+            }
+            if (minParticipants.HasValue)
+            {
+                query = query.Where(t => t.Participants >= minParticipants.Value);
+            }
+            if (startDate.HasValue)
+            {
+                query = query.Where(t => t.StartDate >= startDate.Value);
+            }
+            if (endDate.HasValue)
+            {
+                query = query.Where(t => t.EndDate <= endDate.Value);
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }

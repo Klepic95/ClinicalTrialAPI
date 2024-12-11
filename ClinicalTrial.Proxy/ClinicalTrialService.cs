@@ -73,6 +73,39 @@ namespace ClinicalTrial.Proxy.Services
             }
         }
 
+        public async Task<IEnumerable<ClinicalRecord>> GetFilteredTrialsAsync(string? status = null, int? minParticipants = null, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            var validStatuses = new[] { "NotStarted", "Ongoing", "Completed" };
+            if (!string.IsNullOrEmpty(status) && !validStatuses.Contains(status))
+            {
+                _logger.LogError("Invalid status provided. Please provide a valid status.");
+                throw new InvalidDataException("Invalid status provided. Please provide a valid status.");
+            }
+            if(minParticipants.HasValue && minParticipants <= 0)
+            {
+                _logger.LogError("Invalid number of participants provided. Please provide a valid number of participants.");
+                throw new InvalidDataException("Invalid number of participants provided. Please provide a valid number of participants.");
+            }
+            if(startDate.HasValue && endDate.HasValue && startDate > endDate)
+            {
+                _logger.LogError("Start date cannot be greater than end date.");
+                throw new InvalidDataException("Start date cannot be greater than end date");
+            }
+
+            var clinicalTrialDTOs = await _repository.GetFilteredTrialsAsync(status, minParticipants, startDate, endDate);
+            var clinicalRecords = new List<ClinicalRecord>();
+            if (clinicalTrialDTOs.Count() == 0)
+            {
+                _logger.LogWarning("No clinical records found for the given filter criteria.");
+                return clinicalRecords;
+            }
+            foreach (var clinicalTrialDto in clinicalTrialDTOs)
+            {
+                clinicalRecords.Add(TransformToRepresentationModel(clinicalTrialDto));
+            }
+            return clinicalRecords;
+        }
+
         private bool ValidateJson(string jsonContent)
         {
             try
