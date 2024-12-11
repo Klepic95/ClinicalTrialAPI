@@ -1,5 +1,4 @@
-﻿using ClinicalTrial.DAL;
-using ClinicalTrial.DAL.Interfaces;
+﻿using ClinicalTrial.DAL.Interfaces;
 using ClinicalTrial.DAL.Models;
 using ClinicalTrial.Business.Interfaces;
 using ClinicalTrial.Business.Models;
@@ -8,9 +7,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
-using System.IO;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace ClinicalTrial.Business.Services
 {
@@ -41,16 +38,23 @@ namespace ClinicalTrial.Business.Services
                 }
 
                 var clinicalTrial = JsonConvert.DeserializeObject<Models.ClinicalTrial>(jsonContent);
+
+                if(clinicalTrial?.Participants < 1)
+                {
+                    return ProcessClinicalFile.Failure("Participant number must be greater than 0.");
+                }
+
                 var clinicalTialDTO = TransformToDTOModel(clinicalTrial);
 
-                if (clinicalTialDTO.Status == "Ongoing" && clinicalTialDTO.EndDate == default)
+                if ((clinicalTialDTO.Status == "Ongoing" && clinicalTialDTO.EndDate == default) ||
+                    clinicalTialDTO.EndDate == default)
                 {
                     clinicalTialDTO.EndDate = clinicalTialDTO.StartDate.AddMonths(1);
                 }
                 clinicalTialDTO.DurationInDays = (clinicalTialDTO.EndDate - clinicalTialDTO.StartDate).Days;
 
-                await _repository.AddClinicalTrialAsync(clinicalTialDTO);
-                return ProcessClinicalFile.Success("File processed successfully.");
+                var generatedClinicalTrialId = await _repository.AddClinicalTrialAsync(clinicalTialDTO);
+                return ProcessClinicalFile.Success("File processed successfully.", generatedClinicalTrialId);
             }
             catch (Exception ex)
             {

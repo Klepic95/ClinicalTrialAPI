@@ -34,7 +34,7 @@ namespace ClinicalTrial.API.Controllers
                 return BadRequest(result.Message);
             }
 
-            return Ok("File processed successfully.");
+            return Ok($"File processed successfully. Id of the processed file is: {result.Id}");
         }
     }
 }

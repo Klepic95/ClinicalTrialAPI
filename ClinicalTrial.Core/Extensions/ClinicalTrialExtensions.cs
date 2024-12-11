@@ -5,13 +5,7 @@ using ClinicalTrial.Business.Interfaces;
 using ClinicalTrial.Business.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Clinical.Core.Extensions
 {
@@ -38,7 +32,11 @@ namespace Clinical.Core.Extensions
 
         public static IServiceCollection AddClinicalTrialSwaggerExtension(this IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.Converters.Add(new TrialStatusConverter());
+                });
             services.AddEndpointsApiExplorer();
 
             // Add Swagger/OpenAPI services

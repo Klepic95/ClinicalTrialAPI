@@ -19,10 +19,11 @@ namespace ClinicalTrial.DAL
             _dbContext = dbContext;
         }
 
-        public async Task AddClinicalTrialAsync(ClinicalTrialDTO trialDTO)
+        public async Task<Guid> AddClinicalTrialAsync(ClinicalTrialDTO trialDTO)
         {
             _dbContext.ClinicalTrials.Add(trialDTO);
             await _dbContext.SaveChangesAsync();
+            return trialDTO.Id;
         }
 
         public async Task<ClinicalTrialDTO> GetClinicialTrialByIdAsync(Guid id)
