@@ -13,4 +13,8 @@ After ensuring that connection with the SQL server exists via Docker Container, 
 
 Change startup project in Visuatl studio to "ClinicalTrial.API" and run the solution!
 
+If you want to build application using Docker, please use PowerShell and go in the root Directory of the project (Where both Dockerfile and ClinicalTrial.sln are located), and run following command: "docker build -t clinicaltrialapi .". Once this build is finished successfully, please run this command: "docker run -d -p 8080:80 --name clinicaltrialapi_container clinicaltrialapi" - it will run the build Image in the Docker Container.
+
+Additionally, if you would like to check if the container is running, that can be done running this command: "docker ps".
+
 It is necessary to follow these steps in order to sucessfully run application locally!
