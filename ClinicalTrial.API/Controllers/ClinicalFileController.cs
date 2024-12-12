@@ -17,12 +17,12 @@ namespace ClinicalTrial.API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("uploadFile")]
+        [HttpPost]
         public async Task<ActionResult<ProcessClinicalFileDTO>> UploadFile(IFormFile file)
         {
             if (file == null || file.Length == 0 || Path.GetExtension(file.FileName) != ".json")
             {
-                _logger.LogError("Invalid file type.");
+                _logger.LogError("Invalid file type: " + file?.FileName);
                 return BadRequest("Invalid file type.");
             }
 

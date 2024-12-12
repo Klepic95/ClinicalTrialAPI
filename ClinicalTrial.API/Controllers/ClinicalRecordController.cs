@@ -26,19 +26,19 @@ namespace ClinicalTrial.API.Controllers
                 var trial = await _clinicalTrialService.GetClinicalTrialByIdAsync(id);
                 if (trial == null)
                 {
-                    _logger.LogError("Clinical record with the provided id does not exist.");
-                    return NotFound("Clinical record with the provided id does not exist.");
+                    _logger.LogWarning("Clinical record not found for ID: {Id}", id);
+                    return NotFound("Clinical record not found.");
                 }
                 return Ok(trial);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "An error occured. Please check exception for more details.");
-                throw;
+                _logger.LogError(ex, "Unexpected error while fetching clinical record for ID: {Id}", id);
+                return BadRequest(ex.Message);
             }
         }
 
-        [HttpGet("filterClinicalTrials")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ClinicalRecordDTO>>> FilterClinicalTrials([FromQuery]string? status, [FromQuery]int? minParticipants, [FromQuery]DateTime? startDate, [FromQuery]DateTime? endDate)
         {
             try
@@ -55,7 +55,7 @@ namespace ClinicalTrial.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "An error occured. Please check exception for more details.");
-                throw;
+                return BadRequest(ex.Message);
             }
         }
     }

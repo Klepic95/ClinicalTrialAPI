@@ -47,6 +47,9 @@ namespace ClinicalTrial.Business.Services
                 if (clinicalTial.Status == "Ongoing" && clinicalTial.EndDate == default)
                 {
                     clinicalTial.EndDate = clinicalTial.StartDate.AddMonths(1);
+                }
+                if (clinicalTial.EndDate == default)
+                {
                     clinicalTial.DurationInDays = (clinicalTial.EndDate - clinicalTial.StartDate).Days;
                 }
 
