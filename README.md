@@ -12,7 +12,7 @@ After ensuring that connection with the SQL server exists via Docker Container, 
 NOTE: Setup startup and Default project in VisualStudio>Package Manager Console to: "ClinicalTrial.DAL". You will need to be in the root of this project, so adjust location when you are executing script otherwise the script will fail!
 Change startup project in Visuatl studio to "ClinicalTrial.API" and run the solution if you do not want to run it via Docker.
 
-If you want to build and run application using Docker, please use PowerShell and go in the root Directory of the project (Where both Dockerfile and ClinicalTrial.sln are located), and run following command: "docker build -t clinicaltrialapi .". Once this build is finished successfully, please run this command: "docker run -p 8080:8080 clinicaltrialapi" - it will run the build Image in the Docker Container. Now you can access the Swagger page of the application following this link, and also you can create requests via swagger UI: "http://localhost:8080/swagger/index.html"
+If you want to build and run application using Docker, please use PowerShell and go in the root Directory of the project (Where both Dockerfile and ClinicalTrial.sln are located), and run following command: "docker build -t clinicaltrialapi .". Once this build is finished successfully, please run this command: "docker run -p 8080:8080 --name clinical-trial-api clinicaltrialapi " - it will run the build Image in the Docker Container. Now you can access the Swagger page of the application following this link, and also you can create requests via swagger UI: "http://localhost:8080/swagger/index.html"
 
 Additionally, if you would like to check if the container is running, that can be done running this command: "docker ps".
 
