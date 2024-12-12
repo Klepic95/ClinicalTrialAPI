@@ -22,7 +22,7 @@ namespace ClinicalTrial.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ClinicalTrial.DAL.Models.ClinicalTrialDTO", b =>
+            modelBuilder.Entity("ClinicalTrial.Business.Models.ClinicalTrial", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

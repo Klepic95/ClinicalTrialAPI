@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicalTrial.DAL.Migrations
 {
     [DbContext(typeof(ClinicalTrialDbContext))]
-    [Migration("20241211152247_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241212103038_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace ClinicalTrial.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ClinicalTrial.DAL.Models.ClinicalTrialDTO", b =>
+            modelBuilder.Entity("ClinicalTrial.Business.Models.ClinicalTrial", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
