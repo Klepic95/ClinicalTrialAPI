@@ -34,5 +34,20 @@ namespace ClinicalTrial.API.Extensions
             });
             return services;
         }
+
+        public static IServiceCollection ConfigureCORSPolicy(this IServiceCollection services)
+        {
+            // For the testing purposes we allow all origins, methods and headers
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+            return services;
+        }
     }
 }

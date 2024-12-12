@@ -1,5 +1,6 @@
 ﻿using ClinicalTrial.Business.Interfaces;
 using ClinicalTrial.Business.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicalTrial.API.Controllers
@@ -20,13 +21,21 @@ namespace ClinicalTrial.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ClinicalRecordDTO>> GetById(Guid id)
         {
-            var trial = await _clinicalTrialService.GetClinicalTrialByIdAsync(id);
-            if (trial == null)
+            try
             {
-                _logger.LogError("Clinical record with the provided id does not exist.");
-                return NotFound("Clinical record with the provided id does not exist.");
+                var trial = await _clinicalTrialService.GetClinicalTrialByIdAsync(id);
+                if (trial == null)
+                {
+                    _logger.LogError("Clinical record with the provided id does not exist.");
+                    return NotFound("Clinical record with the provided id does not exist.");
+                }
+                return Ok(trial);
             }
-            return Ok(trial);
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "An error occured. Please check exception for more details.");
+                throw;
+            }
         }
 
         [HttpGet("filterClinicalTrials")]

@@ -35,9 +35,11 @@ public class ClinicalTrialDbContext : DbContext
 
     private static string GetConnectionstring()
     {
+        bool isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+
         SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder()
         {
-            DataSource = "localhost,1433",
+            DataSource = isDocker ? "host.docker.internal,1433" : "localhost,1433",
             UserID = "sa",
             Password = "ctaPass1!",
             TrustServerCertificate = true,

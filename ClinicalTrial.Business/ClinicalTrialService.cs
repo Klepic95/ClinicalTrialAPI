@@ -66,12 +66,18 @@ namespace ClinicalTrial.Business.Services
             try
             {
                 var clinicalTrial = await _repository.GetClinicialTrialByIdAsync(id);
+                if (clinicalTrial == null)
+                {
+                    _logger.LogError("Clinical record not found!");
+                    throw new KeyNotFoundException("Clinical record not found!");
+                }
+
                 return TransformToRepresentationModel(clinicalTrial);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Clinical record not found!");
-                throw new KeyNotFoundException("Clinical record not found!");
+                _logger.LogError(ex, "An error occured while trying to fetch specific record.");
+                throw;
             }
         }
 

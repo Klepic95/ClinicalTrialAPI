@@ -10,6 +10,7 @@ builder.Services.AddClinicalTrialDbContext(builder.Configuration.GetConnectionSt
 builder.Services.AddApplicationServices();
 builder.Services.AddApplicationRepositories();
 builder.Services.AddClinicalTrialSwaggerExtension();
+builder.Services.ConfigureCORSPolicy();
 
 builder.Services.Configure<FormOptions>(options =>
 {
@@ -19,7 +20,7 @@ builder.Services.Configure<FormOptions>(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
