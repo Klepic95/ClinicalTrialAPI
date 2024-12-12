@@ -5,7 +5,7 @@ How to successfully configure the project locally:
 Clone repository
 Install and configure Docker locally (Link for download: https://www.docker.com/products/docker-desktop/)
 Open PowerShell and run this script, however replace specified parameters:
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=ctaPass1!" -p 1433:1433 --name cta4CreateSqlServer -v C:\Users\{your-name}\DockerVolumes\sqlserver:/var/opt/mssql/data -d mcr.microsoft.com/mssql/server:latest
+"docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=ctaPass1!" -p 1433:1433 --name cta4CreateSqlServer -v C:\Users\{your-name}\DockerVolumes\sqlserver:/var/opt/mssql/data -d mcr.microsoft.com/mssql/server:latest"
 Note: in above script, replace {your-name} with the actual name of your local machine
 
 After ensuring that connection with the SQL server exists via Docker Container, in the Visual Studio>Package Manager Console, execute following script: "dotnet ef database update". 
