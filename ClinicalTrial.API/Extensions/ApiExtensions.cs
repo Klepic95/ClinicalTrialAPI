@@ -1,28 +1,11 @@
-﻿using ClinicalTrial.DAL;
-using ClinicalTrial.DAL.Context;
-using ClinicalTrial.DAL.Interfaces;
-using ClinicalTrial.Business.Interfaces;
-using ClinicalTrial.Business.Services;
+﻿using ClinicalTrial.DAL.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace Clinical.Core.Extensions
+namespace ClinicalTrial.API.Extensions
 {
-    public static class ClinicalTrialExtensions
+    public static class ApiExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
-        {
-            services.AddScoped<IClinicalTrialService, ClinicalTrialService>();
-            return services;
-        }
-
-        public static IServiceCollection AddApplicationRepositories(this IServiceCollection services)
-        {
-            services.AddScoped<IClinicalTrialRepository, ClinicalTrialRepository>();
-            return services;
-        }
-
         public static IServiceCollection AddClinicalTrialDbContext(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<ClinicalTrialDbContext>(options =>

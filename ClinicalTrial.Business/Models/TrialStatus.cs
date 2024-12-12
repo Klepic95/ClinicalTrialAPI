@@ -29,7 +29,6 @@ public class TrialStatusConverter : JsonConverter<TrialStatus>
 
     public override void WriteJson(JsonWriter writer, TrialStatus value, JsonSerializer serializer)
     {
-        // Customize serialization if needed
         var stringValue = value switch
         {
             TrialStatus.NotStarted => "Not Started",

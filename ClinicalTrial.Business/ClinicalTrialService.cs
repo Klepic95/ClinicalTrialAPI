@@ -1,6 +1,4 @@
-﻿using ClinicalTrial.DAL.Interfaces;
-using ClinicalTrial.DAL.Models;
-using ClinicalTrial.Business.Interfaces;
+﻿using ClinicalTrial.Business.Interfaces;
 using ClinicalTrial.Business.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -24,7 +22,7 @@ namespace ClinicalTrial.Business.Services
             _logger = logger;
         }
 
-        public async Task<ProcessClinicalFile> ProcessFileAsync(IFormFile file)
+        public async Task<ProcessClinicalFileDTO> ProcessFileAsync(IFormFile file)
         {
             try
             {
@@ -34,41 +32,41 @@ namespace ClinicalTrial.Business.Services
                 // JSON will first be validated against a schema before proceeding
                 if (!ValidateJson(jsonContent))
                 {
-                    return ProcessClinicalFile.Failure("Invalid JSON schema.");
+                    return ProcessClinicalFileDTO.Failure("Invalid JSON schema.");
                 }
 
-                var clinicalTrial = JsonConvert.DeserializeObject<Models.ClinicalTrial>(jsonContent);
+                var clinicalTrialDTO = JsonConvert.DeserializeObject<Models.ClinicalTrialDTO>(jsonContent);
 
-                if(clinicalTrial?.Participants < 1)
+                if(clinicalTrialDTO?.Participants < 1)
                 {
-                    return ProcessClinicalFile.Failure("Participant number must be greater than 0.");
+                    return ProcessClinicalFileDTO.Failure("Participant number must be greater than 0.");
                 }
 
-                var clinicalTialDTO = TransformToDTOModel(clinicalTrial);
+                var clinicalTial = TransformToDTOModel(clinicalTrialDTO);
 
-                if ((clinicalTialDTO.Status == "Ongoing" && clinicalTialDTO.EndDate == default) ||
-                    clinicalTialDTO.EndDate == default)
+                if ((clinicalTial.Status == "Ongoing" && clinicalTial.EndDate == default) ||
+                    clinicalTial.EndDate == default)
                 {
-                    clinicalTialDTO.EndDate = clinicalTialDTO.StartDate.AddMonths(1);
+                    clinicalTial.EndDate = clinicalTial.StartDate.AddMonths(1);
                 }
-                clinicalTialDTO.DurationInDays = (clinicalTialDTO.EndDate - clinicalTialDTO.StartDate).Days;
+                clinicalTial.DurationInDays = (clinicalTial.EndDate - clinicalTial.StartDate).Days;
 
-                var generatedClinicalTrialId = await _repository.AddClinicalTrialAsync(clinicalTialDTO);
-                return ProcessClinicalFile.Success("File processed successfully.", generatedClinicalTrialId);
+                var generatedClinicalTrialId = await _repository.AddClinicalTrialAsync(clinicalTial);
+                return ProcessClinicalFileDTO.Success("File processed successfully.", generatedClinicalTrialId);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error processing file.");
-                return ProcessClinicalFile.Failure("Error processing file.");
+                return ProcessClinicalFileDTO.Failure("Error processing file.");
             }
         }
 
-        public async Task<ClinicalRecord> GetClinicalTrialByIdAsync(Guid id)
+        public async Task<ClinicalRecordDTO> GetClinicalTrialByIdAsync(Guid id)
         {
             try
             {
-                var clinicalTrialDTO = await _repository.GetClinicialTrialByIdAsync(id);
-                return TransformToRepresentationModel(clinicalTrialDTO);
+                var clinicalTrial = await _repository.GetClinicialTrialByIdAsync(id);
+                return TransformToRepresentationModel(clinicalTrial);
             }
             catch (Exception ex)
             {
@@ -77,7 +75,7 @@ namespace ClinicalTrial.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ClinicalRecord>> GetFilteredTrialsAsync(string? status = null, int? minParticipants = null, DateTime? startDate = null, DateTime? endDate = null)
+        public async Task<IEnumerable<ClinicalRecordDTO>> GetFilteredTrialsAsync(string? status = null, int? minParticipants = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             var validStatuses = new[] { "NotStarted", "Ongoing", "Completed" };
             if (!string.IsNullOrEmpty(status) && !validStatuses.Contains(status))
@@ -97,17 +95,17 @@ namespace ClinicalTrial.Business.Services
             }
 
             var clinicalTrialDTOs = await _repository.GetFilteredTrialsAsync(status, minParticipants, startDate, endDate);
-            var clinicalRecords = new List<ClinicalRecord>();
+            var clinicalRecordDTOs = new List<ClinicalRecordDTO>();
             if (clinicalTrialDTOs.Count() == 0)
             {
                 _logger.LogWarning("No clinical records found for the given filter criteria.");
-                return clinicalRecords;
+                return clinicalRecordDTOs;
             }
-            foreach (var clinicalTrialDto in clinicalTrialDTOs)
+            foreach (var clinicalTrialDTO in clinicalTrialDTOs)
             {
-                clinicalRecords.Add(TransformToRepresentationModel(clinicalTrialDto));
+                clinicalRecordDTOs.Add(TransformToRepresentationModel(clinicalTrialDTO));
             }
-            return clinicalRecords;
+            return clinicalRecordDTOs;
         }
 
         private bool ValidateJson(string jsonContent)
@@ -149,30 +147,30 @@ namespace ClinicalTrial.Business.Services
             }
         }
 
-        private ClinicalTrialDTO TransformToDTOModel(Models.ClinicalTrial trial)
+        private Models.ClinicalTrial TransformToDTOModel(Models.ClinicalTrialDTO trialclinicalTrialDTO)
         {
-            return new ClinicalTrialDTO
+            return new Models.ClinicalTrial
             {
-                TrialId = trial.TrialId,
-                Title = trial.Title,
-                StartDate = trial.StartDate,
-                EndDate = trial.EndDate,
-                Participants = trial.Participants,
-                Status = trial.Status.ToString()
+                TrialId = trialclinicalTrialDTO.TrialId,
+                Title = trialclinicalTrialDTO.Title,
+                StartDate = trialclinicalTrialDTO.StartDate,
+                EndDate = trialclinicalTrialDTO.EndDate,
+                Participants = trialclinicalTrialDTO.Participants,
+                Status = trialclinicalTrialDTO.Status.ToString()
             };
         }
 
-        private ClinicalRecord TransformToRepresentationModel(ClinicalTrialDTO trialDTO)
+        private ClinicalRecordDTO TransformToRepresentationModel(Models.ClinicalTrial clinicalTrial)
         {
-            return new Models.ClinicalRecord
+            return new Models.ClinicalRecordDTO
             {
-                TrialId = trialDTO.TrialId,
-                Title = trialDTO.Title,
-                StartDate = trialDTO.StartDate,
-                EndDate = trialDTO.EndDate,
-                Participants = trialDTO.Participants,
-                Status = Enum.TryParse<TrialStatus>(trialDTO.Status, out var status) ? status : TrialStatus.Ongoing,
-                DurationInDays = trialDTO.DurationInDays
+                TrialId = clinicalTrial.TrialId,
+                Title = clinicalTrial.Title,
+                StartDate = clinicalTrial.StartDate,
+                EndDate = clinicalTrial.EndDate,
+                Participants = clinicalTrial.Participants,
+                Status = Enum.TryParse<TrialStatus>(clinicalTrial.Status, out var status) ? status : TrialStatus.Ongoing,
+                DurationInDays = clinicalTrial.DurationInDays
             };
         }
     }

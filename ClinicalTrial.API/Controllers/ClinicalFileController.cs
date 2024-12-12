@@ -1,6 +1,5 @@
 ﻿using ClinicalTrial.Business.Interfaces;
 using ClinicalTrial.Business.Models;
-using ClinicalTrial.Business.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicalTrial.API.Controllers
@@ -19,7 +18,7 @@ namespace ClinicalTrial.API.Controllers
         }
 
         [HttpPost("uploadFile")]
-        public async Task<ActionResult<ProcessClinicalFile>> UploadFile(IFormFile file)
+        public async Task<ActionResult<ProcessClinicalFileDTO>> UploadFile(IFormFile file)
         {
             if (file == null || file.Length == 0 || Path.GetExtension(file.FileName) != ".json")
             {

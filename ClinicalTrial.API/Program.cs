@@ -1,6 +1,7 @@
-using Clinical.Core.Extensions;
+using ClinicalTrial.API.Extensions;
+using ClinicalTrial.Business.Extensions;
+using ClinicalTrial.DAL.Extensions;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

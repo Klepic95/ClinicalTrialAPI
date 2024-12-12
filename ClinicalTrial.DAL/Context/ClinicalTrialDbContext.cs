@@ -1,12 +1,11 @@
-﻿using ClinicalTrial.DAL.Models;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClinicalTrial.DAL.Context;
 
 public class ClinicalTrialDbContext : DbContext
 {
-    public DbSet<ClinicalTrialDTO> ClinicalTrials { get; set; }
+    public DbSet<Business.Models.ClinicalTrial> ClinicalTrials { get; set; }
 
     public ClinicalTrialDbContext()
     {
@@ -26,10 +25,10 @@ public class ClinicalTrialDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<ClinicalTrialDTO>()
+        modelBuilder.Entity<Business.Models.ClinicalTrial>()
             .HasKey(c => c.Id);
 
-        modelBuilder.Entity<ClinicalTrialDTO>()
+        modelBuilder.Entity<Business.Models.ClinicalTrial>()
             .Property(c => c.Id)
             .ValueGeneratedOnAdd();
     }

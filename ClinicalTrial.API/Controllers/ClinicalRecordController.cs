@@ -18,7 +18,7 @@ namespace ClinicalTrial.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClinicalRecord>> GetById(Guid id)
+        public async Task<ActionResult<ClinicalRecordDTO>> GetById(Guid id)
         {
             var trial = await _clinicalTrialService.GetClinicalTrialByIdAsync(id);
             if (trial == null)
@@ -30,7 +30,7 @@ namespace ClinicalTrial.API.Controllers
         }
 
         [HttpGet("filterClinicalTrials")]
-        public async Task<ActionResult<IEnumerable<ClinicalRecord>>> FilterClinicalTrials([FromQuery]string? status, [FromQuery]int? minParticipants, [FromQuery]DateTime? startDate, [FromQuery]DateTime? endDate)
+        public async Task<ActionResult<IEnumerable<ClinicalRecordDTO>>> FilterClinicalTrials([FromQuery]string? status, [FromQuery]int? minParticipants, [FromQuery]DateTime? startDate, [FromQuery]DateTime? endDate)
         {
             try
             {
