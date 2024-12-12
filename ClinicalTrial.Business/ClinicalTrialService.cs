@@ -42,14 +42,13 @@ namespace ClinicalTrial.Business.Services
                     return ProcessClinicalFileDTO.Failure("Participant number must be greater than 0.");
                 }
 
-                var clinicalTial = TransformToDTOModel(clinicalTrialDTO);
+                var clinicalTial = TransformToDatabaseModel(clinicalTrialDTO);
 
-                if ((clinicalTial.Status == "Ongoing" && clinicalTial.EndDate == default) ||
-                    clinicalTial.EndDate == default)
+                if (clinicalTial.Status == "Ongoing" && clinicalTial.EndDate == default)
                 {
                     clinicalTial.EndDate = clinicalTial.StartDate.AddMonths(1);
+                    clinicalTial.DurationInDays = (clinicalTial.EndDate - clinicalTial.StartDate).Days;
                 }
-                clinicalTial.DurationInDays = (clinicalTial.EndDate - clinicalTial.StartDate).Days;
 
                 var generatedClinicalTrialId = await _repository.AddClinicalTrialAsync(clinicalTial);
                 return ProcessClinicalFileDTO.Success("File processed successfully.", generatedClinicalTrialId);
@@ -72,7 +71,7 @@ namespace ClinicalTrial.Business.Services
                     throw new KeyNotFoundException("Clinical record not found!");
                 }
 
-                return TransformToRepresentationModel(clinicalTrial);
+                return TransformToDTOModel(clinicalTrial);
             }
             catch (Exception ex)
             {
@@ -109,7 +108,7 @@ namespace ClinicalTrial.Business.Services
             }
             foreach (var clinicalTrialDTO in clinicalTrialDTOs)
             {
-                clinicalRecordDTOs.Add(TransformToRepresentationModel(clinicalTrialDTO));
+                clinicalRecordDTOs.Add(TransformToDTOModel(clinicalTrialDTO));
             }
             return clinicalRecordDTOs;
         }
@@ -153,7 +152,7 @@ namespace ClinicalTrial.Business.Services
             }
         }
 
-        private Models.ClinicalTrial TransformToDTOModel(Models.ClinicalTrialDTO trialclinicalTrialDTO)
+        private Models.ClinicalTrial TransformToDatabaseModel(Models.ClinicalTrialDTO trialclinicalTrialDTO)
         {
             return new Models.ClinicalTrial
             {
@@ -166,7 +165,7 @@ namespace ClinicalTrial.Business.Services
             };
         }
 
-        private ClinicalRecordDTO TransformToRepresentationModel(Models.ClinicalTrial clinicalTrial)
+        private ClinicalRecordDTO TransformToDTOModel(Models.ClinicalTrial clinicalTrial)
         {
             return new Models.ClinicalRecordDTO
             {
