@@ -5,10 +5,11 @@ VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalTrial.API", "ClinicalTrial.API\ClinicalTrial.API.csproj", "{49C3BF27-D2CB-4816-BE36-5B9EF54D02C5}"
 EndProject
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalTrial.DAL", "ClinicalTrial.DAL\ClinicalTrial.DAL.csproj", "{06894356-68FC-41DE-B9B7-5E978136081B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalTrial.Business", "ClinicalTrial.Business\ClinicalTrial.Business.csproj", "{B83FE6DE-BF90-402F-92B9-51F788C87FEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalTrial.UnitTests", "ClinicalTrial.UnitTests\ClinicalTrial.UnitTests.csproj", "{02421860-9C19-40F1-AE51-FF81CA14E4A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
